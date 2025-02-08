@@ -1,6 +1,7 @@
 import "./ContactItem.css";
+import { memo } from "react";
 
-export default function ContactItem({ id, name, contact, onDelete }) {
+export default memo(function ContactItem({ id, name, contact, onDelete }) {
   const onClickDeleteButton = () => {
     onDelete(id);
   };
@@ -12,4 +13,4 @@ export default function ContactItem({ id, name, contact, onDelete }) {
       <button onClick={onClickDeleteButton}>🗑️ Remove</button>
     </div>
   );
-}
+});

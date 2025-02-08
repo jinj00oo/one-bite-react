@@ -1,24 +1,40 @@
 import "./App.css";
 import ContactEditor from "./components/ContactEditor";
 import ContactList from "./components/ContactList";
-import { useState, useRef } from "react";
+import { useState, useRef, useReducer, useCallback } from "react";
+
+function reducer(contacts, action) {
+  switch (action.type) {
+    case "CREATE":
+      return [action.data, ...contacts];
+    case "DELETE":
+      return contacts.filter((contact) => contact.id !== action.data);
+    default:
+      return contacts;
+  }
+}
 
 function App() {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, dispatch] = useReducer(reducer, []);
   const idRef = useRef(0);
 
-  const onCreate = ({ name, contact }) => {
-    const newContact = {
-      id: idRef.current++,
-      name: name,
-      contact: contact,
-    };
-    setContacts([newContact, ...contacts]);
-  };
+  const onCreate = useCallback(({ name, contact }) => {
+    dispatch({
+      type: "CREATE",
+      data: {
+        id: idRef.current++,
+        name: name,
+        contact: contact,
+      },
+    });
+  }, []);
 
-  const onDelete = (targetId) => {
-    setContacts(contacts.filter((contact) => contact.id !== targetId));
-  };
+  const onDelete = useCallback((targetId) => {
+    dispatch({
+      type: "DELETE",
+      data: targetId,
+    });
+  }, []);
 
   return (
     <div className="App">
